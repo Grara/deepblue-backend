@@ -1,0 +1,17 @@
+spring:
+  profiles: swagger
+
+  datasource:
+    url: jdbc:mariadb://helloshop-db.ch30djhspsrg.ap-northeast-2.rds.amazonaws.com:3306/deepblue_swagger
+    username: admin
+    password: ENC(f45j4EPqkzbVyJE6GM0/DHjvTQiAG1BD)
+    driver-class-name: org.mariadb.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+logging.level:
+  org.hibernate.SQL: debug
