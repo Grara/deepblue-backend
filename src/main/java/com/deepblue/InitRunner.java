@@ -6,6 +6,7 @@ import com.deepblue.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -16,10 +17,10 @@ import java.util.List;
 public class InitRunner implements ApplicationRunner {
 
     private final MemberRepository memberRepository;
-
+    private final PasswordEncoder encoder;
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        Member member = new Member("user", "1234");
+        Member member = new Member("user", encoder.encode("1234"));
         memberRepository.save(member);
     }
 }

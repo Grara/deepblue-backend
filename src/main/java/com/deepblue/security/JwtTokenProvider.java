@@ -41,26 +41,41 @@ public class JwtTokenProvider {
                 .collect(Collectors.joining(","));
 
         //현재시각
-        long now = (new Date().getTime());
-
-        //토큰 만료 시간
-        Date accessTokenExpiresIn = new Date(now+3600000); //만료기간 1시간
+        long now = new Date().getTime();
 
         //액세스 토큰 생성
         String accessToken = Jwts.builder()
                 .setSubject(authentication.getName()) //유저ID
                 .claim("auth", authorities) //auth라는 클레임을 생성한 후 권한정보를 넣음
-                .setExpiration(accessTokenExpiresIn) //만료기간
+                .setExpiration(new Date(now + 3600000)) //만료기간 1시간
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
 
         //리프레쉬 토큰 생성
         String refreshToken = Jwts.builder()
+                .setSubject(authentication.getName()) //유저ID
                 .setExpiration(new Date(now + 2592000000L)) //만료기간 30일
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
 
         //토큰 DTO 반환
+        return TokenInfo.builder()
+                .grantType("Bearer")
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
+    }
+
+    public TokenInfo recreateAccessToken(String username, String refreshToken){
+        long now = new Date().getTime();
+
+        String accessToken = Jwts.builder()
+                .setSubject(username) //유저ID
+                .claim("auth", "ROLE_USER") //auth라는 클레임을 생성한 후 권한정보를 넣음
+                .setExpiration(new Date(now+3600000)) //만료기간 1시간
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+
         return TokenInfo.builder()
                 .grantType("Bearer")
                 .accessToken(accessToken)
@@ -106,7 +121,7 @@ public class JwtTokenProvider {
         return false;
     }
 
-    private Claims parseClaims(String accessToken) {
+    public Claims parseClaims(String accessToken) {
         try{
             return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody();
         } catch (ExpiredJwtException e){

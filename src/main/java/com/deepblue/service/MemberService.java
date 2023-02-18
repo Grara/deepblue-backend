@@ -4,6 +4,7 @@ import com.deepblue.domain.Member;
 import com.deepblue.repository.MemberRepository;
 import com.deepblue.security.JwtTokenProvider;
 import com.deepblue.security.TokenInfo;
+import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -61,5 +62,18 @@ public class MemberService {
         Authentication authentication = managerBuilder.getObject().authenticate(authenticationToken);
         TokenInfo tokenInfo = jwtTokenProvider.generateToken(authentication);
         return tokenInfo;
+    }
+
+    public TokenInfo recreateAccessToken(String refreshToken){
+        if(jwtTokenProvider.validateToken(refreshToken)){
+            Claims claims = jwtTokenProvider.parseClaims(refreshToken);
+            if(claims.get("sub") == null){
+                throw new RuntimeException("잘못된 토큰입니다");
+            }
+            String username = claims.get("sub").toString();
+            return jwtTokenProvider.recreateAccessToken(username, refreshToken);
+        }else{
+            throw new RuntimeException("잘못된 토큰입니다");
+        }
     }
 }
