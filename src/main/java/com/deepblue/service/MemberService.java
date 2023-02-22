@@ -32,6 +32,7 @@ public class MemberService {
     private int a = 1;
     private int b = 2;
     private int c = 3;
+    private int d = 4;
 
     /**
      * 전달받은 회원명의 회원이 DB에 있는지 확인 후 중복여부를 반환해줍니다.
