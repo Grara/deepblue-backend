@@ -13,5 +13,15 @@ spring:
     pathmatch:
       matching-strategy: ant_path_matcher
 
+jasypt:
+  encryptor:
+    bean: jasyptStringEncryptor
+    property:
+      prefix: ENC(
+      suffix: )
+
+jwt:
+  secret: ENC(IMcLPjvNG63aBZhE0TZd5H8wSXisF5gv0IHZZSzS0LrZsxaXeFbrkPqaSrVVa1uGGOIOuX18l4Y=)
+
 logging.level:
   org.hibernate.SQL: debug

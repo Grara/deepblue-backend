@@ -51,7 +51,7 @@ public class MemberService {
      * 로그인을 시도하는 정보를 바탕으로 JWT토큰을 반환해줍니다.
      * @param username 로그인 시도 ID
      * @param password 로그인 시도 비밀번호
-     * @return 액세스 토큰, 리프레쉬 토큰, 인가 타입
+     * @return 액세스 토큰, 리프레쉬 토큰, 인가 타입이 담긴 DTO
      * @since : 2023-02-17
      * @lastModified : 2023-02-17
      */
@@ -64,6 +64,13 @@ public class MemberService {
         return tokenInfo;
     }
 
+    /**
+     * 리프레쉬토큰을 검증 후 액세스 토큰을 재발급해줍니다.
+     * @param refreshToken 검증할 리프레쉬토큰
+     * @return 액세스 토큰, 리프레쉬 토큰, 인가 타입이 담긴 DTO
+     * @since : 2023-02-17
+     * @lastModified : 2023-02-17
+     */
     public TokenInfo recreateAccessToken(String refreshToken){
         if(jwtTokenProvider.validateToken(refreshToken)){
             Claims claims = jwtTokenProvider.parseClaims(refreshToken);
